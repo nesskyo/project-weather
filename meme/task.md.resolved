@@ -1,0 +1,7 @@
+- [/] Initialize Python environment and install dependencies (FastAPI, Uvicorn, python-dotenv, httpx).
+- [ ] Set up environment variables (`.env`) for the OpenWeatherMap API key securely.
+- [ ] Implement the `GET /api/weather/current?city={city_name}` endpoint.
+- [ ] Implement the `GET /api/weather/forecast?city={city_name}` endpoint.
+- [ ] Implement the `GET /api/weather/coords?lat={latitude}&lon={longitude}` endpoint.
+- [ ] Add CORS middleware.
+- [ ] Implement standardized error handling.

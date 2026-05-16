@@ -1,0 +1,66 @@
+# AI Integration for Weather Insights
+
+This plan outlines the integration of an AI service (Google Gemini) into the SkyCast web application to generate smart, natural language weather insights based on current weather data.
+
+## User Review Required
+
+> [!IMPORTANT]
+> The backend requires a valid `GEMINI_API_KEY` to be added to the `.env` file for the AI integration to work. You will need to obtain an API key from Google AI Studio and place it in `backend/.env`.
+
+## Open Questions
+
+> [!NOTE]
+> Do you have a specific tone or style you want the AI to use? (e.g., formal, humorous, concise, travel-focused). The current prompt asks for a "helpful, concise, and friendly weather summary with clothing or activity recommendations." 
+
+## Proposed Changes
+
+### Backend Requirements
+
+#### [MODIFY] backend/requirements.txt
+Add `google-genai` to dependencies.
+
+#### [MODIFY] backend/.env and backend/.env.example
+Add a placeholder for `GEMINI_API_KEY`.
+
+---
+
+### Backend Implementation
+
+#### [MODIFY] backend/main.py
+- Import `google-genai` and initialize the client using the `GEMINI_API_KEY`.
+- Create a new `Pydantic` model `WeatherInfo` to accept incoming weather data.
+- Add a new `POST /api/weather/ai-insights` endpoint. This endpoint will:
+  - Take the `WeatherInfo` payload.
+  - Construct a prompt asking for a short summary and recommendation.
+  - Call `client.models.generate_content` (using `gemini-2.5-flash`).
+  - Return the AI's generated text as JSON.
+
+---
+
+### Frontend Implementation
+
+#### [MODIFY] frontend/index.html
+- Add an "AI Insights" section to the `main-content` area.
+- Add an `id="ai-insight-text"` container and a loading state element specifically for the AI response.
+
+#### [MODIFY] frontend/styles.css
+- Style the AI Insights section using the existing `glass-card` classes.
+- Add styles for the AI loading spinner to ensure it doesn't block the rest of the weather data rendering.
+
+#### [MODIFY] frontend/app.js
+- In `updateUI()`, after the main weather data has been loaded and displayed, asynchronously call `fetchAIInsights(state.currentData)`.
+- Create the `fetchAIInsights` function to:
+  - Show the AI loading state.
+  - Make a `POST` request to `/api/weather/ai-insights` with the current weather.
+  - Hide the loading state and display the AI-generated text.
+
+## Verification Plan
+
+### Automated Tests
+- Run the FastAPI backend server using `uvicorn`.
+- Trigger the `/api/weather/ai-insights` endpoint using a tool like curl or the Swagger UI (`/docs`).
+
+### Manual Verification
+- Start the frontend and search for a city.
+- Ensure the main weather data loads immediately.
+- Ensure the AI Insights section shows a loading spinner, then populates with a natural language summary and recommendation based on the weather conditions.
